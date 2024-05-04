@@ -20,8 +20,9 @@ class DecisionTree:
     self.n_features=n_features  
     self.root=None  
 
-  def fit(self, X, y):  
-    pass  
+  def fit(self, X, y):
+    self.n_features = X.shape[1] if not self.n_features else min(self.n_features, X.shape[1])
+    self.root = self._grow_tree(X, y)
 
   def _grow_tree(self, X, y, depth=0):  
     pass  
