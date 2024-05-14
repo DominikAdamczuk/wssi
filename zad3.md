@@ -35,7 +35,10 @@ class DecisionTree:
     pass
 
   def _split(self, X_column, split_thresh):
-    pass
+    left_index = np.argwhere(X_column <= split_thresh).flatten()
+    right_index = np.argwhere(X_column > split_thresh).flatten()
+
+    return left_index, right_index
 
   def _entropy(self, y):
     hist = np.bincount(y)
