@@ -26,10 +26,45 @@ class DecisionTree:
     self.root = self._grow_tree(X, y)
 
   def _grow_tree(self, X, y, depth=0):
-    pass
+    n_samples, n_features = X.shape
+    unique_labels, counts = np.unique(y, return_counts=True)
+    most_common_label = unique_labels[np.argmax(counts)]
+
+    if(depth >= self.max_depth or len(unique_labels)==1 or n_samples < self.min_samples_split):
+      return Node(value=most_common_label)
+
+    feat_idxs = np.random.choice(n_features, self.n_features, replace=False)
+
+    best_feat, best_thresh = self._best_split(X, y, feat_idxs)
+
+    left_index, right_index = self._split(X[:, best_feat], best_thresh)
+
+    left = self._grow_tree(X[left_index, :], y[left_index], depth+1)
+    right = self._grow_tree(X[right_index, :], y[right_index], depth+1)
+
+    return Node(best_feat, best_thresh, left, right)
 
   def _best_split(self, X, y, feat_idxs):
-    pass
+    best_feat = None
+    best_thresh = None
+    best_gain = -1
+
+    for feat_idx in feat_idxs:
+      X_column = X[:, feat_idx]
+      thresholds = np.unique(X_column)
+
+      for threshold in thresholds:
+        gain = self._information_gain(y, X_column, threshold)
+
+        if gain > best_gain:
+          best_gain = gain
+          best_feat = feat_idx
+          best_thresh = threshold
+
+    if best_feat is None:
+      return 0, 0
+
+    return best_feat, best_thresh
 
   def _information_gain(self, y, X_column, threshold):
     parent_entropy = self._entropy(y)
