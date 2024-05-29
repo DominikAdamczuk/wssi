@@ -34,3 +34,26 @@ layers = [layer1hidden, layer2hidden, layer3out]
 out = function(layers, test)
 print(out)
 ```
+
+
+```
+import networkx as nx
+#import matplotlib.pyplot as plt
+
+Graph = nx.DiGraph()
+
+layers = [3,4,4,1]
+
+for layer in range(len(layers)-1):
+    for start_neuron in range(layers[layer]):
+        for end_neuron in range(layers[layer+1]):
+            Graph.add_edge(f"{layer}_{start_neuron}", f"{layer+1}_{end_neuron}")
+
+position = {}
+for layer, layers in enumerate(layers):
+    for neuron in range(layers):
+        position[f"{layer}_{neuron}"] = (layer, -neuron)
+
+nx.draw(Graph, position, with_labels=False, node_size=2000, node_color="red")
+#plt.show()
+```
